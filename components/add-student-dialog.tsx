@@ -16,6 +16,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { addStudent } from "@/app/actions/student-actions"
+import toast from "react-hot-toast"
+// import { useToast } from "@/components/ui/use-toast"
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -25,7 +28,7 @@ const formSchema = z.object({
   phoneNumber: z.string().min(10, "Phone number must be at least 10 characters"),
   grade: z.string().min(1, "Grade is required"),
   class: z.string().min(1, "Class is required"),
-  gender: z.string().min(1, "Gender is required"),
+  gender: z.enum(["MALE", "FEMALE"]),
   address: z.string().min(5, "Address must be at least 5 characters"),
 })
 
@@ -34,11 +37,11 @@ type FormValues = z.infer<typeof formSchema>
 interface AddStudentDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSubmit: (data: FormValues) => void
 }
 
-export function AddStudentDialog({ open, onOpenChange, onSubmit }: AddStudentDialogProps) {
+export function AddStudentDialog({ open, onOpenChange }: AddStudentDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+//   const { toast } = useToast()
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -50,7 +53,7 @@ export function AddStudentDialog({ open, onOpenChange, onSubmit }: AddStudentDia
       phoneNumber: "",
       grade: "",
       class: "",
-      gender: "",
+      gender: "MALE",
       address: "",
     },
   })
@@ -58,11 +61,20 @@ export function AddStudentDialog({ open, onOpenChange, onSubmit }: AddStudentDia
   const handleSubmit = async (data: FormValues) => {
     setIsSubmitting(true)
     try {
-      await onSubmit(data)
-      form.reset()
-      onOpenChange(false)
+      const result = await addStudent({
+        ...data,
+        grade: Number.parseInt(data.grade, 10),
+      })
+      if (result.success) {
+        toast("Student added successfully")
+        form.reset()
+        onOpenChange(false)
+      } else {
+        throw new Error(result.error)
+      }
     } catch (error) {
       console.error("Error submitting form:", error)
+      toast("Failed to add student. Please try again.")
     } finally {
       setIsSubmitting(false)
     }
@@ -211,8 +223,8 @@ export function AddStudentDialog({ open, onOpenChange, onSubmit }: AddStudentDia
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Male">Male</SelectItem>
-                      <SelectItem value="Female">Female</SelectItem>
+                      <SelectItem value="MALE">Male</SelectItem>
+                      <SelectItem value="FEMALE">Female</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

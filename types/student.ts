@@ -1,20 +1,20 @@
 export interface Student {
-    id: string
-    name: string
-    avatar: string
-    grade: number
-    class: string
-    indexNo: number
-    dateOfBirth: string
-    guardianName: string
-    phoneNumber: string
-    gender: "Male" | "Female"
-  }
-  
-  export interface FilterState {
-    grade: string
-    class: string
-    gender: string
-  }
-  
-  
+  id: number
+  name: string
+  avatar?: string
+  indexNumber: string
+  dateOfBirth: string
+  guardianName: string
+  phoneNumber: string
+  grade: number
+  class: string
+  gender: "MALE" | "FEMALE"
+  address: string
+}
+
+export interface FilterState {
+  grade: string
+  class: string
+  gender: string
+}
+

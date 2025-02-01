@@ -5,11 +5,15 @@ import { Button } from "@/components/ui/button"
 import { StudentFilters } from "@/components/student-filters"
 import { StudentsTable } from "@/components/students-table"
 import { AddStudentDialog } from "@/components/add-student-dialog"
-import { students } from "@/data/students"
 import type { FilterState, Student } from "@/types/student"
 import { Plus } from "lucide-react"
 
-export default function StudentList() {
+interface StudentListClientProps {
+  initialStudents: Student[]
+}
+
+export default function StudentListClient({ initialStudents }: StudentListClientProps) {
+  const [students, setStudents] = useState(initialStudents)
   const [filters, setFilters] = useState<FilterState>({
     grade: "all",
     class: "all",
@@ -21,11 +25,12 @@ export default function StudentList() {
     setFilters((prev) => ({ ...prev, [key]: value }))
   }
 
-  // const handleAddStudent = async (data: Student) => {
-  //   // Here you would typically make an API call to add the student
-  //   console.log("Adding student:", data)
-  //   // After successfully adding the student, you might want to refresh the students list
-  // }
+//   const handleAddStudent = async (data: Student) => {
+//     // Here you would typically make an API call to add the student
+//     console.log("Adding student:", data)
+//     // After successfully adding the student, update the local state
+//     setStudents((prevStudents) => [...prevStudents, data])
+//   }
 
   const filteredStudents = students.filter((student) => {
     if (filters.grade !== "all" && student.grade.toString() !== filters.grade) return false
@@ -36,7 +41,7 @@ export default function StudentList() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      {/* <div className="mx-auto max-w-7xl"> */}
+      <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Student List</h1>
           <Button className="bg-[#4318FF] hover:bg-[#3A16E0]" onClick={() => setIsAddDialogOpen(true)}>
@@ -45,12 +50,12 @@ export default function StudentList() {
           </Button>
         </div>
 
-        <StudentFilters filters={filters} onFilterChange={handleFilterChange} />
+        {/* <StudentFilters filters={filters} onFilterChange={handleFilterChange} /> */}
 
-        <StudentsTable students={filteredStudents} />
+        {/* <StudentsTable students={filteredStudents} /> */}
 
         <AddStudentDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
-      {/* </div> */}
+      </div>
     </div>
   )
 }

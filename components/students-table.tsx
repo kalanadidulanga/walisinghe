@@ -26,19 +26,12 @@ export function StudentsTable({ students }: StudentsTableProps) {
             <tr key={student.id} className="border-b">
               <td className="py-3 px-4">
                 <div className="flex items-center gap-3">
-                  {/* <Image
-                    src={student.avatar || "/placeholder.svg"}
-                    alt={student.name}
-                    width={32}
-                    height={32}
-                    className="rounded-full"
-                  /> */}
                   <span className="font-medium">{student.name}</span>
                 </div>
               </td>
               <td className="py-3 px-4">{student.grade}</td>
               <td className="py-3 px-4">{student.class}</td>
-              <td className="py-3 px-4">{student.indexNo}</td>
+              <td className="py-3 px-4">{student.indexNumber}</td>
               <td className="py-3 px-4">{student.dateOfBirth}</td>
               <td className="py-3 px-4">{student.guardianName}</td>
               <td className="py-3 px-4">{student.phoneNumber}</td>
