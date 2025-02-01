@@ -1,0 +1,32 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id           Int      @id @default(autoincrement())
+  name         String
+  indexNumber  String   @unique
+  dateOfBirth  DateTime
+  guardianName String
+  phoneNumber  String
+  grade        Int
+  class        String
+  gender       Gender
+  address      String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
