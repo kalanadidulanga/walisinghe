@@ -71,7 +71,7 @@ export function AddStudentDialog({ open, onOpenChange, onRefresh }: AddStudentDi
       } else {
         throw new Error(result.error);
       }
-    } catch (error :any) {
+    } catch (error: any) {
       console.error("Error submitting form:", error);
       toast.error(error.message || "Failed to add student. Please try again.");
     } finally {
@@ -172,7 +172,7 @@ export function AddStudentDialog({ open, onOpenChange, onRefresh }: AddStudentDi
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {[10, 11, 12].map((grade) => (
+                        {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
                           <SelectItem key={grade} value={grade.toString()}>
                             {grade}
                           </SelectItem>
@@ -197,7 +197,7 @@ export function AddStudentDialog({ open, onOpenChange, onRefresh }: AddStudentDi
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {["A", "B", "C"].map((className) => (
+                        {["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"].map((className) => (
                           <SelectItem key={className} value={className}>
                             {className}
                           </SelectItem>
