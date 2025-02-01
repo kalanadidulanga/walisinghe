@@ -16,23 +16,25 @@ const studentSchema = z.object({
   address: z.string().min(5, "Address must be at least 5 characters"),
 })
 
-export async function addStudent(data: z.infer<typeof studentSchema>) {
-  const validatedData = studentSchema.parse(data)
+export type AddStudentInput = z.infer<typeof studentSchema>
 
-  try {
-    const student = await prisma.student.create({
-      data: {
-        ...validatedData,
-        dateOfBirth: new Date(validatedData.dateOfBirth),
-      },
-    })
-    revalidatePath("/students")
-    return { success: true, data: student }
-  } catch (error) {
-    console.error("Failed to add student:", error)
-    return { success: false, error: "Failed to add student" }
+export async function addStudent(data: AddStudentInput) {
+    const validatedData = studentSchema.parse(data);
+  
+    try {
+      const student = await prisma.student.create({
+        data: {
+          ...validatedData,
+          dateOfBirth: new Date(validatedData.dateOfBirth), // Ensure date is in valid format
+        },
+      });
+    //   revalidatePath("/students");
+      return { success: true, data: student };
+    } catch (error) {
+      console.error("Failed to add student:", error);
+      return { success: false, error: "Failed to add student. Please check the data and try again." };
+    }
   }
-}
 
 export async function getAllStudents() {
   try {

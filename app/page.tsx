@@ -1,13 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { StudentFilters } from "@/components/student-filters"
 import { StudentsTable } from "@/components/students-table"
 import { AddStudentDialog } from "@/components/add-student-dialog"
 import { students } from "@/data/students"
-import type { FilterState, Student } from "@/types/student"
+import type { FilterState } from "@/types/student"
 import { Plus } from "lucide-react"
+import { getAllStudents } from "./actions/student-actions"
 
 export default function StudentList() {
   const [filters, setFilters] = useState<FilterState>({
@@ -16,23 +17,23 @@ export default function StudentList() {
     gender: "all",
   })
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
+  const [students, setStudents] = useState<any>([])
 
-  const handleFilterChange = (key: keyof FilterState, value: string) => {
-    setFilters((prev) => ({ ...prev, [key]: value }))
+  const fetchStudents = async () => {
+    const result = await getAllStudents()
+    if (result.success) {
+      console.log(result.data)
+      setStudents(result.data)
+    }
   }
 
-  // const handleAddStudent = async (data: Student) => {
-  //   // Here you would typically make an API call to add the student
-  //   console.log("Adding student:", data)
-  //   // After successfully adding the student, you might want to refresh the students list
-  // }
+  useEffect(() => {
+    fetchStudents()
+  }, [])
 
-  const filteredStudents = students.filter((student) => {
-    if (filters.grade !== "all" && student.grade.toString() !== filters.grade) return false
-    if (filters.class !== "all" && student.class !== filters.class) return false
-    if (filters.gender !== "all" && student.gender.toLowerCase() !== filters.gender.toLowerCase()) return false
-    return true
-  })
+  const reFresh = () => {
+    fetchStudents()
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -45,11 +46,11 @@ export default function StudentList() {
           </Button>
         </div>
 
-        <StudentFilters filters={filters} onFilterChange={handleFilterChange} />
+        {/* <StudentFilters filters={filters} onFilterChange={handleFilterChange} /> */}
 
-        <StudentsTable students={filteredStudents} />
+        <StudentsTable students={students} onRefresh={reFresh}/>
 
-        <AddStudentDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
+        <AddStudentDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} onRefresh={reFresh} />
       {/* </div> */}
     </div>
   )

@@ -16,8 +16,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { addStudent } from "@/app/actions/student-actions"
+import { editStudent } from "@/app/actions/student-actions"
 import toast from "react-hot-toast"
+import { format } from "date-fns"
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -33,58 +34,71 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>
 
-interface AddStudentDialogProps {
+interface Student {
+  id: number
+  name: string
+  indexNumber: string
+  dateOfBirth: Date
+  guardianName: string
+  phoneNumber: string
+  grade: number
+  class: string
+  gender: "MALE" | "FEMALE"
+  address: string
+}
+
+interface EditStudentDialogProps {
+  student: Student
   open: boolean
   onOpenChange: (open: boolean) => void
   onRefresh: () => void
 }
 
-export function AddStudentDialog({ open, onOpenChange, onRefresh }: AddStudentDialogProps) {
+export function EditStudentDialog({ student, open, onOpenChange,onRefresh }: EditStudentDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      indexNumber: "",
-      dateOfBirth: "",
-      guardianName: "",
-      phoneNumber: "",
-      grade: "",
-      class: "",
-      gender: "MALE",
-      address: "",
+      name: student.name,
+      indexNumber: student.indexNumber,
+      dateOfBirth: format(new Date(student.dateOfBirth), "yyyy-MM-dd"),
+      guardianName: student.guardianName,
+      phoneNumber: student.phoneNumber,
+      grade: student.grade.toString(),
+      class: student.class,
+      gender: student.gender,
+      address: student.address,
     },
   })
 
   const handleSubmit = async (data: FormValues) => {
-    setIsSubmitting(true);
+    setIsSubmitting(true)
     try {
-      const result = await addStudent({
+      const result = await editStudent(student.id, {
         ...data,
         grade: Number.parseInt(data.grade, 10),
-      });
+      })
       if (result.success) {
-        toast.success("Student added successfully");
-        form.reset();
-        onOpenChange(false);
+        toast.success("Student updated successfully")
+        onOpenChange(false)
       } else {
-        throw new Error(result.error);
+        throw new Error(result.error)
       }
-    } catch (error :any) {
-      console.error("Error submitting form:", error);
-      toast.error(error.message || "Failed to add student. Please try again.");
+    } catch (error) {
+      console.error("Error updating student:", error)
+      toast.error("Failed to update student. Please try again.")
     } finally {
-      setIsSubmitting(false);
-      onRefresh();
+      setIsSubmitting(false)
+      onRefresh()
     }
-  };
+  }
 
   return (
     <ResponsiveModal open={open} onOpenChange={onOpenChange}>
       <ResponsiveModalContent className="sm:max-w-[425px]">
         <ResponsiveModalHeader>
-          <ResponsiveModalTitle>Add Student</ResponsiveModalTitle>
+          <ResponsiveModalTitle>Edit Student</ResponsiveModalTitle>
         </ResponsiveModalHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
@@ -251,7 +265,7 @@ export function AddStudentDialog({ open, onOpenChange, onRefresh }: AddStudentDi
                 Close
               </Button>
               <Button type="submit" className="bg-[#4318FF] hover:bg-[#3A16E0]" disabled={isSubmitting}>
-                {isSubmitting ? "Saving..." : "Save"}
+                {isSubmitting ? "Saving..." : "Save Changes"}
               </Button>
             </ResponsiveModalDescription>
           </form>
@@ -260,3 +274,4 @@ export function AddStudentDialog({ open, onOpenChange, onRefresh }: AddStudentDi
     </ResponsiveModal>
   )
 }
+
