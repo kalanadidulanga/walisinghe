@@ -172,7 +172,7 @@ export function AddStudentDialog({ open, onOpenChange, onRefresh }: AddStudentDi
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
+                        {[6, 7, 8, 9, 10, 11, 12, 13].map((grade) => (
                           <SelectItem key={grade} value={grade.toString()}>
                             {grade}
                           </SelectItem>

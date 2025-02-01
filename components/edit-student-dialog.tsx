@@ -54,7 +54,7 @@ interface EditStudentDialogProps {
   onRefresh: () => void
 }
 
-export function EditStudentDialog({ student, open, onOpenChange,onRefresh }: EditStudentDialogProps) {
+export function EditStudentDialog({ student, open, onOpenChange, onRefresh }: EditStudentDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<FormValues>({
@@ -186,7 +186,7 @@ export function EditStudentDialog({ student, open, onOpenChange,onRefresh }: Edi
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {[10, 11, 12].map((grade) => (
+                        {[6, 7, 8, 9, 10, 11, 12, 13].map((grade) => (
                           <SelectItem key={grade} value={grade.toString()}>
                             {grade}
                           </SelectItem>
@@ -211,7 +211,7 @@ export function EditStudentDialog({ student, open, onOpenChange,onRefresh }: Edi
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {["A", "B", "C"].map((className) => (
+                        {["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"].map((className) => (
                           <SelectItem key={className} value={className}>
                             {className}
                           </SelectItem>
